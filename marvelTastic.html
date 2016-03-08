@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MARVELtastic</title>
+	
+	<!--Bootstrap Loaded-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	
+	<!--jQuery Loaded-->
+	<script src="http://code.jquery.com/jquery.js"></script>
+
+</head>
+<body>
+	<div id="super"></div>
+	<form id="hero-form">
+    	<label for="hero-input">Add a Hero</label>
+    	<input type="text" id="hero-input"><br>
+    	<input id="addHero" type="submit" value="Add a Hero">
+  	</form>
+	<div id="superGIFs"></div>
+	
+</body>
+
+<script type="text/javascript">
+	
+
+
+	// Array of heroes to be placed into the URL
+	var heroes = ['captain america', 'thor', 'iron-man', 'hulk', 'daredevil', 'jessica jones', 'star lord', 'ant man', 'deadpool'];
+
+	// For loop, generates buttons for each superhero in the array, appends them to the div at top of page
+	function renderButtons(){
+		console.log(heroes);
+		$("#super").empty();
+		for(var i = 0; i < heroes.length; i++){
+			var button = $("<button>");
+			button.attr("id", heroes[i]);
+			button.attr("data-hero", heroes[i]);
+			button.text(heroes[i]);
+			$("#super").append(button);
+		};
+	}
+
+	renderButtons();
+
+	$("#addHero").click(function(){
+		var newHero = $("#hero-input").val().trim();
+		heroes.push(newHero);
+		var lastItem = heroes.length-1;
+		var button = $("<button>");
+		button.attr("id", heroes[lastItem]);
+		button.attr("data-hero", heroes[lastItem]);
+		button.text(heroes[lastItem]);
+		$("#super").append(button);
+		return false;
+	});
+
+	// When button is clicked, data-hero for that button is placed into the Giphy API as a query
+	$('button').click(function(){
+		var hero = $(this).data('hero');
+		console.log(hero);
+		var queryURL = "http://api.giphy.com/v1/gifs/search?q="+ hero + "&api_key=dc6zaTOxFJmzC&limit=10&rating=g&offset=0";
+
+		// An AJAX call is made with the API URL to generate the data for the respective query
+		$.ajax({url: queryURL, method: 'GET'})
+
+			// When done, function will ouput the JSON object connected to the API URL
+			.done(function(response){
+
+				// A variable is declared for the results of the AJAX call
+				var results = response.data;
+
+
+				// For loop to generate divs for each GIF, containing the GIF and its respective rating from Giphy
+                for (var i = 0; i < results.length; i++) {
+                    var gifDiv = $('<div class="item">')
+                    var rating = results[i].rating;
+                    var p = $('<p>').text("Rating: " + rating);
+
+                    // Each GIF will have the "heroes" class to access later for still/animate triggers
+                    var heroGIF = $('<img>');
+                    // The default data-state for each GIF is set to "still"
+                    heroGIF.attr('data-state', 'still');
+                    heroGIF.addClass('heroes');
+                    // This will be the URL for the GIF when it is animated
+                    var animateURL = results[i].images.fixed_height.url;
+                    var stillURL = results[i].images.fixed_height_still.url;
+    
+                    heroGIF.attr('data-animate', animateURL);
+                    heroGIF.attr('data-still', stillURL);
+
+                    heroGIF.attr('src', stillURL);		
+
+                    gifDiv.append(p)
+                    gifDiv.append(heroGIF)
+
+                    $('#superGIFs').prepend(gifDiv);
+                }
+
+			});	
+		
+
+	});
+	
+	$(".heroes").click(function(){
+		var state = $(this).attr("data-state");
+		if(state == "still"){
+			$(this).attr('src', $(this).data('animate'));
+            $(this).attr('data-state', 'animate');
+		}else{
+			$(this).attr('src', $(this).data('still'));
+            $(this).attr('data-state', 'still');
+		}
+	});
+		
+</script>
+</html>
