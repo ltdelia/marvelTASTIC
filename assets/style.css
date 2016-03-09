@@ -1,0 +1,38 @@
+#super{
+	margin-top:20px;
+	margin-left:100px;
+}
+
+.jumbotron{
+	background-color:white;
+
+	margin-top:70px;
+}
+
+.panel{
+	margin-top:50px;
+}
+
+.heroes{
+	margin-left:20px;
+	margin-bottom:20px;
+}
+
+#hero-form{
+	float:right;
+	margin-right:50px;
+}
+
+#form-box{
+	background-color:white;
+}
+
+button.heroes{
+
+	color:red;
+}
+
+body{
+
+	font-family: 'Alegreya Sans SC', sans-serif;0
+}
