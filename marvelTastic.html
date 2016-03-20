@@ -84,6 +84,7 @@
 
 	// When button is clicked, data-hero for that button is placed into the Giphy API as a query
 	$('#super').on('click', 'button', function(){
+		$('#superGIFs').empty();
 		var hero = $(this).data('hero');
 		console.log(hero);
 		var queryURL = "http://api.giphy.com/v1/gifs/search?q="+ hero + "&api_key=dc6zaTOxFJmzC&limit=10&rating=g&offset=0";
